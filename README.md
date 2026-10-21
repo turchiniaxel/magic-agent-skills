@@ -26,6 +26,18 @@ rulesync generate --global
 
 This writes skills, subagents, commands, rules, MCP and hooks to `~/.claude/` and `~/.config/opencode/`. Targets and features are set in [`rulesync.jsonc`](rulesync.jsonc). `delete` is off, so existing global files are never removed.
 
+### Without cloning (npx)
+
+```bash
+npx magic-agent-skills                                       # everything
+npx magic-agent-skills --skill agents-md-structurer          # one skill
+npx magic-agent-skills --subagent architecture-guardian      # one subagent
+npx magic-agent-skills --list                                # what is available
+npx magic-agent-skills --dry-run                             # preview, write nothing
+```
+
+`--skill` and `--subagent` are repeatable. When either is given, only the selected resources are installed. Rulesync is bundled, nothing else to install.
+
 ### Skills only (skills CLI)
 
 With the [skills CLI](https://skills.sh):

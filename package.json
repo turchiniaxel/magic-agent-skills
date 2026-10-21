@@ -1,0 +1,25 @@
+{
+  "name": "magic-agent-skills",
+  "version": "0.1.0",
+  "description": "Install my AI coding harness resources (skills, subagents) globally with Rulesync",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "magic-agent-skills": "bin/install.mjs"
+  },
+  "files": [
+    "bin",
+    ".rulesync",
+    "rulesync.jsonc"
+  ],
+  "engines": {
+    "node": ">=18.3"
+  },
+  "dependencies": {
+    "rulesync": "^38.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/turchiniaxel/magic-agent-skills.git"
+  }
+}
