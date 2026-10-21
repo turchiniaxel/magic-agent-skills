@@ -1,7 +1,7 @@
 {
   "name": "magic-agent-skills",
   "version": "0.1.0",
-  "description": "Install my AI coding harness resources (skills, subagents) globally with Rulesync",
+  "description": "Install my AI coding harness resources (skills, subagents, commands) globally with Rulesync",
   "license": "MIT",
   "type": "module",
   "bin": {

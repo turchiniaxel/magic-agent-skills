@@ -12,7 +12,14 @@ A factory for my AI coding harness resources: skills, subagents, commands, rules
 
 | Subagent | What it does |
 |----------|--------------|
+| [`code-reviewer`](.rulesync/subagents/code-reviewer.md) | Read-only code reviewer: bugs, security, performance, tests and readability in a diff, with `file:line` evidence. Leaves architecture to `architecture-guardian`. |
 | [`architecture-guardian`](.rulesync/subagents/architecture-guardian.md) | Read-only architecture reviewer: checks changes against documented boundaries, layering and dependencies, reports violations with `file:line` evidence. |
+
+## Commands
+
+| Command | What it does |
+|---------|--------------|
+| [`code-reviewer`](.rulesync/commands/code-reviewer.md) | Reviews `git diff HEAD` and returns comments ranked by severity (critical, architectural, quality, suggestions). Fans out to `code-reviewer` and `architecture-guardian`, then merges both reports. |
 
 ## Install
 
@@ -32,11 +39,12 @@ This writes skills, subagents, commands, rules, MCP and hooks to `~/.claude/` an
 npx magic-agent-skills                                       # everything
 npx magic-agent-skills --skill agents-md-structurer          # one skill
 npx magic-agent-skills --subagent architecture-guardian      # one subagent
+npx magic-agent-skills --command code-reviewer               # one command
 npx magic-agent-skills --list                                # what is available
 npx magic-agent-skills --dry-run                             # preview, write nothing
 ```
 
-`--skill` and `--subagent` are repeatable. When either is given, only the selected resources are installed. Rulesync is bundled, nothing else to install.
+`--skill`, `--subagent` and `--command` are repeatable. When any is given, only the selected resources are installed. Rulesync is bundled, nothing else to install.
 
 ### Skills only (skills CLI)
 

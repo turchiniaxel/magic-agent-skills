@@ -8,13 +8,14 @@ import { parseArgs } from "node:util";
 
 const USAGE = `Usage: magic-agent-skills [options]
 
-Installs skills and subagents globally (~/.claude, ~/.config/opencode) with Rulesync.
-Without --skill / --subagent, everything is installed.
+Installs skills, subagents and commands globally (~/.claude, ~/.config/opencode) with Rulesync.
+Without --skill / --subagent / --command, everything is installed.
 
 Options:
   --skill <name>      Install only this skill (repeatable)
   --subagent <name>   Install only this subagent (repeatable)
-  --list              List available skills and subagents
+  --command <name>    Install only this command (repeatable)
+  --list              List available skills, subagents and commands
   --dry-run           Show what would be written without writing
   -h, --help          Show this help`;
 
@@ -22,6 +23,7 @@ const { values } = parseArgs({
   options: {
     skill: { type: "string", multiple: true, default: [] },
     subagent: { type: "string", multiple: true, default: [] },
+    command: { type: "string", multiple: true, default: [] },
     list: { type: "boolean", default: false },
     "dry-run": { type: "boolean", default: false },
     help: { type: "boolean", short: "h", default: false },
@@ -36,14 +38,18 @@ if (values.help) {
 const pkgRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const skillsDir = (root) => join(root, ".rulesync", "skills");
 const subagentsDir = (root) => join(root, ".rulesync", "subagents");
+const commandsDir = (root) => join(root, ".rulesync", "commands");
 
 const listSkills = (root) => readdirSync(skillsDir(root));
 const listSubagents = (root) =>
   readdirSync(subagentsDir(root)).map((f) => parse(f).name);
+const listCommands = (root) =>
+  readdirSync(commandsDir(root)).map((f) => parse(f).name);
 
 if (values.list) {
   console.log(`Skills:\n${listSkills(pkgRoot).map((s) => `  ${s}`).join("\n")}`);
   console.log(`Subagents:\n${listSubagents(pkgRoot).map((s) => `  ${s}`).join("\n")}`);
+  console.log(`Commands:\n${listCommands(pkgRoot).map((c) => `  ${c}`).join("\n")}`);
   process.exit(0);
 }
 
@@ -62,12 +68,16 @@ const fail = (message) => {
   process.exit(1);
 };
 
-const filtered = values.skill.length > 0 || values.subagent.length > 0;
+const filtered = values.skill.length > 0 || values.subagent.length > 0 || values.command.length > 0;
 for (const name of values.skill) {
   if (!listSkills(pkgRoot).includes(name)) fail(`unknown skill "${name}" (see --list)`);
 }
 for (const name of values.subagent) {
   if (!listSubagents(pkgRoot).includes(name)) fail(`unknown subagent "${name}" (see --list)`);
+}
+
+for (const name of values.command) {
+  if (!listCommands(pkgRoot).includes(name)) fail(`unknown command "${name}" (see --list)`);
 }
 
 // Rulesync reads from `<input-root>/.rulesync`, so generate from a filtered copy.
@@ -83,6 +93,9 @@ try {
     for (const file of readdirSync(subagentsDir(workDir))) {
       if (!values.subagent.includes(parse(file).name)) rmSync(join(subagentsDir(workDir), file));
     }
+    for (const file of readdirSync(commandsDir(workDir))) {
+      if (!values.command.includes(parse(file).name)) rmSync(join(commandsDir(workDir), file));
+    }
   }
 
   const rulesyncPkg = findRulesync(pkgRoot);
@@ -92,7 +105,7 @@ try {
   if (!existsSync(cli)) fail("rulesync CLI not found, reinstall the package");
 
   // Only generate features that exist, otherwise rulesync warns about each missing file.
-  const features = ["skills", "subagents"].filter((f) => readdirSync(join(workDir, ".rulesync", f)).length > 0);
+  const features = ["skills", "subagents", "commands"].filter((f) => readdirSync(join(workDir, ".rulesync", f)).length > 0);
   if (features.length === 0) fail("nothing to install");
 
   const args = [cli, "generate", "--global", "--input-root", workDir, "--features", features.join(",")];
