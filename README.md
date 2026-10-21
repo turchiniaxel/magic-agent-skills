@@ -12,7 +12,7 @@ A factory for my AI coding harness resources: skills, subagents, commands, rules
 
 | Subagent | What it does |
 |----------|--------------|
-| [`planner`](.rulesync/subagents/planner.md) | Read-only planner: analyzes files and reports an implementation plan, never writes code. |
+| [`architecture-guardian`](.rulesync/subagents/architecture-guardian.md) | Read-only architecture reviewer: checks changes against documented boundaries, layering and dependencies, reports violations with `file:line` evidence. |
 
 ## Install
 
