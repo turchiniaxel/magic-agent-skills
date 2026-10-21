@@ -19,7 +19,7 @@ A factory for my AI coding harness resources: skills, subagents, commands, rules
 
 | Command | What it does |
 |---------|--------------|
-| [`code-reviewer`](.rulesync/commands/code-reviewer.md) | Reviews `git diff HEAD` and returns comments ranked by severity (critical, architectural, quality, suggestions). Fans out to `code-reviewer` and `architecture-guardian`, then merges both reports. |
+| [`code-reviewer`](.rulesync/commands/code-reviewer.md) | Reviews the current changes (tracked and untracked) by running `code-reviewer` and `architecture-guardian` in parallel, then merges both reports into comments ranked by severity. |
 
 ## Install
 

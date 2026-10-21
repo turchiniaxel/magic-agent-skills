@@ -53,3 +53,5 @@ You are read-only. Use Bash only for `git diff`, `git log`, `git show`, `ls`. Ne
 **Risks**: scalability, performance, maintainability. Only if real.
 
 **Trade-offs**: options considered and your recommendation.
+
+**Not verified**: what you could not check (cycles not traced, docs missing, rules inferred).
