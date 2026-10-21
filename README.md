@@ -28,59 +28,13 @@ This writes skills, subagents, commands, rules, MCP and hooks to `~/.claude/` an
 
 ### Skills only (skills CLI)
 
-Install every skill in this repo with the [skills CLI](https://skills.sh):
+With the [skills CLI](https://skills.sh):
 
 ```bash
-npx skills add turchiniaxel/magic-agent-skills
+npx skills add turchiniaxel/magic-agent-skills                                  # all skills
+npx skills add turchiniaxel/magic-agent-skills --skill agents-md-structurer     # one skill
+npx skills add turchiniaxel/magic-agent-skills --list                           # list only
 ```
-
-Install a single skill:
-
-```bash
-npx skills add turchiniaxel/magic-agent-skills --skill agents-md-structurer
-```
-
-List what the repo offers without installing:
-
-```bash
-npx skills add turchiniaxel/magic-agent-skills --list
-```
-
-## `agents-md-structurer`
-
-`/init` usually produces a prose dump: file listings, obvious facts, generic advice. Agents load that file on every session, so noise costs tokens and hides the lines that matter. This skill rewrites it into a fixed six-section structure.
-
-### Target structure
-
-1. **Project Overview & Scope**: tech stack and core domain.
-2. **Command Palette**: install, build, dev server, single-file test, lint/format.
-3. **Architecture & Code Boundaries**: pattern, directory roles, dependency invariants.
-4. **Coding Standards & Conventions**: naming, error handling, state management.
-5. **Agent Operational Constraints**: guardrails against destructive or out-of-scope actions.
-6. **Extended Documentation Index**: links to `docs/*.md` (progressive disclosure).
-
-The full template is in [`assets/template.md`](.rulesync/skills/agents-md-structurer/assets/template.md).
-
-### How it works
-
-1. Finds `AGENTS.md` / `CLAUDE.md` and backs it up to `<file>.bak`.
-2. Verifies commands and versions against the repo (`package.json`, `Makefile`, lockfiles, CI) instead of trusting the generated text.
-3. Maps useful content into the template and prunes anything the agent can infer from the code.
-4. Moves bulky material (architecture notes, schemas, API contracts) into `docs/` and links it.
-5. Marks unverifiable fields `TODO: confirm with team` rather than guessing.
-6. Reports what was kept, moved and deleted.
-
-Output stays under ~150 lines. If both files exist, `AGENTS.md` holds the content and `CLAUDE.md` becomes a one-line `@AGENTS.md` pointer.
-
-### Usage
-
-Run `/init` in your project, then let the skill trigger, or ask explicitly:
-
-```
-restructure my AGENTS.md
-```
-
-Triggering is description-based, so it is likely but not guaranteed right after `/init`. Ask for it by name if it does not fire.
 
 ## Repository layout
 
@@ -101,8 +55,8 @@ Generated output (`.claude/`, `.agents/`, `.opencode/`, ...) is gitignored.
 
 ## Adding a resource
 
-- **Skill**: create `.rulesync/skills/<name>/SKILL.md`. `<name>` is lowercase letters, digits and single hyphens and matches the `name` in the frontmatter. Frontmatter requires `name` and `description` (1-1024 characters); put every "when to use" hint in the description.
-- **Subagent**: create `.rulesync/subagents/<name>.md` with `name`, `targets` and `description` frontmatter, then the prompt as body. Per-harness overrides go under a `claudecode:` / `opencode:` key.
+- **Skill**: create `.rulesync/skills/<name>/SKILL.md`. `<name>` is kebab-case and matches the frontmatter `name`. Put every "when to use" hint in `description` (1-1024 characters).
+- **Subagent**: create `.rulesync/subagents/<name>.md` with `name`, `targets` and `description` frontmatter, then the prompt as body. Per-harness overrides go under `claudecode:` / `opencode:`.
 - **Command, rule, MCP, hook**: see the [Rulesync file formats](https://rulesync.dyoshikawa.com/reference/file-formats).
 
 Then add a row to the tables above and run `rulesync generate --global`. Restart the harness: resources are loaded at startup.
